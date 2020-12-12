@@ -1,0 +1,12 @@
+# IDE
+.idea
+
+# Development
+venv
+
+# Build
+build
+dist
+
+# Logs
+*.log
