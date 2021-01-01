@@ -49,26 +49,19 @@ class AlphaVantageClient(API):
         d_data = standardize_keys(d_data)
         return d_data
 
-    # def get_ex_rate(self, from_currency, to_currency, reach='exchange'):
-    #     function_map = {
-    #         "exchange": "CURRENCY_EXCHANGE_RATE",
-    #         "intraday": "FX_INTRADAY",
-    #         "daily": "FX_DAILY",
-    #         "weekly": "FX_WEEKLY",
-    #         "monthly": "FX_MONTHLY"
-    #     }
-    #     try:
-    #         function = function_map[reach]
-    #     except KeyError:
-    #         logger.error(f"The reach argument value does not exist: '{reach}'")
-    #         raise
-    #
-    #     payload = {
-    #         "function": function,
-    #         "from_currency": from_currency,
-    #         "to_currency": to_currency
-    #     }
-    #     return self._get(payload)
+    def get_global_quote(self, symbol):
+        """Get the live quote."""
+        payload = {
+            "function": "GLOBAL_QUOTE",
+            "symbol": symbol
+        }
+        response = self._get(payload)
+        data = response.json().get("Global Quote")
+        if not data:
+            raise ApiQueryError
+        s_data = standardize_keys(data)
+        logger.info(s_data)
+        return s_data
 
 
 def standardize_keys(d):
@@ -77,4 +70,4 @@ def standardize_keys(d):
 
 
 def standardize(s):
-    return re.sub(r"^[0-9]+", "", s).strip(". ").replace(" ", "_").upper()
+    return re.sub(r"^[0-9]+", "", s).strip(". ").replace(" ", "_").lower()

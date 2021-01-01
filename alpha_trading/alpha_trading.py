@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 
 from lib.constants import get_config
+from lib.environment import Environment
 
 HERE = Path(os.path.realpath(__file__)).parent.resolve()
 LOG_FOLDER = HERE.parent / 'logs'
@@ -62,8 +63,16 @@ def main():
     log_path = LOG_FOLDER / f'alpha-{tmsp}.log'
     set_log(log_path, debug=args.verbose)
 
-    logging.info(args.verbose)
+    env = Environment(config)
 
+    logging.info(env.user.first_name)
+
+    # logging.info('Buy 100 netflix')
+    # env.broker.buy(symbol='NFLX', quantity=100)
+    # logging.info('Sell 50 netflix')
+    # env.broker.sell(symbol='NFLX', quantity=50)
+    logging.info('Netflix Profit:')
+    logging.info(env.broker.calculate_profit('NFLX'))
 
 
 

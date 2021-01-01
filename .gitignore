@@ -3,6 +3,8 @@
 
 # Development
 venv
+__pycache__
+private.ini
 
 # Build
 build
@@ -10,3 +12,6 @@ dist
 
 # Logs
 *.log
+
+# Database
+*.db

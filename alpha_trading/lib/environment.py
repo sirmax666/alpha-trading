@@ -13,18 +13,21 @@ import logging
 from pathlib import Path
 import sqlparse
 
-from . import api
 from . import database
+from .broker import Broker
 
 
 logger = logging.getLogger(__name__)
 
 
 class Environment:
+    """Enrivonment Setup
+    Contains the User as specified in the configs and also the api client object.
+    """
     def __init__(self, config, **kwargs):
         self.config = config
         self.db = database.Database(database=config.get('DATABASE', 'DATABASE'))
-        self.client = api.AlphaVantageClient(**dict(self.config.items('API')))
+        self.broker = Broker(config, self.db)
         self.initialize()
         self.user = User(self.db, self.config.get('GENERAL', 'USERNAME'))
 
@@ -52,6 +55,9 @@ class Environment:
 
 
 class User:
+    """User Class
+    Most useful to link the user's wallet instance.
+    """
     def __init__(self, db, username):
         self.db = db
         self.username = username
@@ -63,8 +69,8 @@ class User:
         self.wallet = Wallet(self.db, self.user_id)
 
     def _set_info(self):
-        stmt = (f"SELECT * "
-                f"FROM USER_INFO "
+        stmt = ("SELECT * "
+                "FROM USER_INFO "
                 f"WHERE USER_NAME='{self.username}';")
         res, hdr = self.db.execute(stmt)
         return dict(zip(hdr, res[0]))
@@ -77,8 +83,8 @@ class Wallet:
         self.balance = self._init_balance()
 
     def _init_balance(self):
-        stmt = (f"SELECT SUM(DEPOSIT) - SUM(WITHDRAWAL) "
-                f"FROM USER_DEPOSITS "
+        stmt = ("SELECT SUM(DEPOSIT) - SUM(WITHDRAWAL) "
+                "FROM USER_DEPOSITS "
                 f"WHERE USER_ID={self.user_id};")
         res, hdr = self.db.execute(stmt)
         if not res:

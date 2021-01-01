@@ -22,6 +22,7 @@ DB_PATH = os.path.join(PARAM_FOLDER, 'alpha.db')
 
 # --- GLOBALS ---
 NULL = ['NAN', 'NULL', 'N/A', 'NONE', '']
+TRANSACTION_FEE = 4.95
 
 
 def get_config(ini_path=INI_PATH, credentials=False):
